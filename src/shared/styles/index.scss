@@ -1,0 +1,35 @@
+@use './vars.scss';
+@use './base.scss';
+
+
+.container {
+  max-width: 1430px;
+  padding: 0 15px;
+  margin: 0 auto;
+  width: 100%;
+  background-color: inherit;
+}
+
+.content {
+  padding-top: 100px;
+}
+
+@media (max-width: 768) {
+  .container {
+    padding: 0 5px;
+  }
+}
+
+.p-toast {
+  max-width: calc(100% - 40px);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
