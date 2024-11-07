@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useUserStore } from '@/entities/user'
 import * as toast from '../lib/toast'
+import { errorMessages } from "vue/compiler-sfc";
 
 
 let userStore = null;
@@ -23,7 +24,7 @@ axiosInstance.interceptors.request.use(
       userStore = useUserStore();
     }
 
-    config.headers.Authorization = userStore.token ?? null;
+    config.headers.Authorization = userStore.token;
 
 
     return config;
@@ -45,7 +46,9 @@ axiosInstance.interceptors.response.use(
     const res = error?.response;
 
     if (res?.data?.detail) {
-      toast.error(`${res.status} ${res.statusText}`, res.data.detail);
+      const errorDetail = res.data.detail;
+      const errorMessages = Array.isArray(errorDetail) ? errorDetail.flatMap((e) => e.msg).join(' ') : errorDetail
+      toast.error(`${res.status} ${res.statusText}`, errorMessages);
     } else {
       toast.error(res.status, res.statusText);
     }
