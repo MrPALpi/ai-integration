@@ -2,9 +2,9 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 
 class User {
-  constructor(id = null, name = null, token = null) {
+  constructor(id = null, email = null, token = null) {
     this.id = id;
-    this.name = name;
+    this.email = email;
     this.token = token;
   }
 }
@@ -13,7 +13,6 @@ export const useUserStore = defineStore('user', () => {
   const user = ref(new User);
 
   const email = computed(() => user.value.email);
-  const id = computed(() => user.value.id);
   const token = computed(() => user.value.token);
   const isAuth = computed(() => {
     const isAuth = !!user.value.token
@@ -44,5 +43,5 @@ export const useUserStore = defineStore('user', () => {
     setUser(new User)
   }
 
-  return { user, email, id, isAuth, setUser, setUserFromCookie, exit }
+  return { user, email, token, isAuth, setUser, setUserFromCookie, exit }
 })
