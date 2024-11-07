@@ -10,15 +10,9 @@
 
 	watch(
 		() => route.meta.layout,
-		async (to, from) => {
-			const nextLayout = to?.meta?.layout || layouts.DEFAULT;
-			const prevLayout = from?.meta?.layout || layouts.DEFAULT;
-
-			if (prevLayout?.name && nextLayout.name === prevLayout?.name) {
-				return;
-			}
-
-			layout.value = defineAsyncComponent(nextLayout.component);
+		async (newValue, oldValue) => {
+			const layoutName = newValue.component || layouts['DEFAULT'].component;
+			layout.value = defineAsyncComponent(layoutName);
 		}
 	);
 </script>
