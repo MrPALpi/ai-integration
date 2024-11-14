@@ -1,10 +1,6 @@
 import axios from "axios";
-import { useUserStore } from '@/entities/user'
-import * as toast from '../lib/toast'
-import { errorMessages } from "vue/compiler-sfc";
-
-
-let userStore = null;
+import { useUserStore } from '@/entities/user';
+import * as toast from '../lib/toast';
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
@@ -13,47 +9,73 @@ const axiosInstance = axios.create({
   },
 });
 
+
+let userStore = null;
+const getUserStore = () => {
+  if (!userStore) {
+    userStore = useUserStore();
+  }
+  return userStore;
+};
+
 axiosInstance.interceptors.request.use(
-  function (config) {
-
-    if (config.headers.Authorization !== undefined) {
-      return config
+  (config) => {
+    if (config.headers?.Authorization) {
+      return config;
     }
 
-    if (userStore === null) {
-      userStore = useUserStore();
+    // Add auth token
+    const store = getUserStore();
+    if (store?.token) {
+      config.headers.Authorization = store.token;
     }
-
-    config.headers.Authorization = userStore.token;
-
 
     return config;
   },
-
-  function (error) {
-    toast.error('Error', 'Something went wrong');
-    console.error(error);
+  (error) => {
+    toast.error('Request Error', 'Failed to send request');
     return Promise.reject(error);
   }
 );
 
 axiosInstance.interceptors.response.use(
-  function (response) {
-    return response;
-  },
+  (response) => response,
+  (error) => {
+    const response = error?.response;
 
-  function (error) {
-    const res = error?.response;
-
-    if (res?.data?.detail) {
-      const errorDetail = res.data.detail;
-      const errorMessages = Array.isArray(errorDetail) ? errorDetail.flatMap((e) => e.msg).join(' ') : errorDetail
-      toast.error(`${res.status} ${res.statusText}`, errorMessages);
-    } else {
-      toast.error(res.status, res.statusText);
+    if (!response) {
+      toast.error('Network Error', 'Failed to connect to server');
+      return Promise.reject(error);
     }
 
-    console.error(error);
+    const { status, statusText, data } = response;
+
+    if (data?.detail) {
+      const errorDetail = data.detail;
+      const errorMessage = Array.isArray(errorDetail)
+        ? errorDetail.flatMap(e => e.msg).join(' ')
+        : errorDetail;
+
+      toast.error(`${status} ${statusText}`, errorMessage);
+    } else {
+      toast.error(
+        'API Error',
+        status ? `${status} ${statusText}` : 'Unknown error occurred'
+      );
+    }
+
+
+    if (status === 401) {
+      const store = getUserStore();
+      store?.logout();
+    }
+
+    console.error('[API Error]', {
+      status,
+      statusText,
+      data,
+      url: response.config?.url
+    });
 
     return Promise.reject(error);
   }

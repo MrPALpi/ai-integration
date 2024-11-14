@@ -57,7 +57,7 @@
 						required="true"
 						minlength="3"
 					/>
-					<label for="email">Password</label>
+					<label for="password">Password</label>
 				</float-label>
 
 				<slot name="target-btn" />
