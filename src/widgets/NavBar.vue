@@ -35,7 +35,7 @@
 						label: 'Выйти',
 						icon: 'pi pi-times',
 						command: () => {
-							user.exit();
+							user.logout();
 							router.push({ name: 'Login' });
 						},
 					},

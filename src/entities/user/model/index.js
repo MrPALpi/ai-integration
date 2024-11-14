@@ -39,9 +39,9 @@ export const useUserStore = defineStore('user', () => {
     Object.assign(user.value, JSON.parse(userString));
   }
 
-  const exit = () => {
+  const logout = () => {
     setUser(new User)
   }
 
-  return { user, email, token, isAuth, setUser, setUserFromCookie, exit }
+  return { user, email, token, isAuth, setUser, setUserFromCookie, logout }
 })

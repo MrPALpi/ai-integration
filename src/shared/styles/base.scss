@@ -25,6 +25,10 @@ body,
 	@supports (not selector(::-webkit-scrollbar)) {
 		scrollbar-width: thin;
 	}
+
+	& {
+scrollbar-gutter: stable;
+	}
 }
 
 body,

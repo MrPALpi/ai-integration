@@ -3,22 +3,16 @@
 	import Button from 'primevue/button';
 	import LoginForm from '@/shared/ui/LoginForm.vue';
 
-	import { signUp } from '../api/index.js';
+	import { signUp, loading } from '../api/index.js';
 	import { useRouter } from 'vue-router';
 
 	const router = useRouter();
-	const loading = shallowRef(false);
 
 	const submit = async ({ email, password }) => {
-		loading.value = true;
-		try {
-			const res = await signUp(email, password);
+		const res = await signUp(email, password);
 
-			if (res.id !== undefined) {
-				router.push({ name: 'Login' });
-			}
-		} finally {
-			loading.value = false;
+		if (res.id !== undefined) {
+			router.push({ name: 'Login' });
 		}
 	};
 </script>

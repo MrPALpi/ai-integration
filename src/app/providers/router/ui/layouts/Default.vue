@@ -12,6 +12,7 @@
 </template>
 <style lang="scss" scoped>
 	.header {
-		padding: 40px 0;
+		padding-top: 40px;
+		padding-bottom: 40px;
 	}
 </style>

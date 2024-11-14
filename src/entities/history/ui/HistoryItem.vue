@@ -1,22 +1,42 @@
 <script setup>
-	import { shallowRef } from 'vue';
+	import { humanDate } from '@/shared/lib/humanDate';
+	import Checkbox from 'primevue/checkbox';
 	import Card from 'primevue/card';
+
+	const emits = defineEmits(['deleteStory']);
 	const props = defineProps({
-		history: { type: Object, default: {} },
+		story: { type: Object, default: {} },
 	});
 </script>
 <template>
-	<card>
+	<card class="history-item">
+		<template #header>
+			<button
+				class="p-button-text p-button-plain p-button-sm"
+				@click="emits('deleteStory', story.id)"
+			>
+				<i class="pi pi-times" />
+			</button>
+		</template>
 		<template #title>
-			<router-link to="{{ history.url }}">
+			<a :href="story.url" target="_blank">
 				<i class="pi pi-external-link" />
-				{{ history.title }}
-			</router-link>
+				{{ story.title }}
+			</a>
 		</template>
 		<template #content>
-			{{ history.url }}
+			<div>
+				{{ story.url }}
+			</div>
+			<div>
+				{{ humanDate(story.viewed_at) }}
+			</div>
 		</template>
 	</card>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+	.history-item {
+		word-break: break-all;
+	}
+</style>
