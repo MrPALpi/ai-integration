@@ -43,6 +43,7 @@
 						required="true"
 						type="email"
 						minlength="3"
+						:fluid="true"
 					/>
 					<label for="email">Email</label>
 				</float-label>
@@ -56,6 +57,7 @@
 						autocomplete="true"
 						required="true"
 						minlength="3"
+						:fluid="true"
 					/>
 					<label for="password">Password</label>
 				</float-label>

@@ -8,11 +8,13 @@
 </script>
 
 <template>
-	<i
-		class="pi pi-spin pi-spinner loading"
-		v-if="loading"
-		style="font-size: 100px; color: white"
-	></i>
+	<div v-if="loading" class="loading-wrap">
+		<i
+			class="pi pi-spin pi-spinner loading"
+			style="font-size: 100px; color: white"
+		></i>
+	</div>
+
 	<div v-else-if="stories.length" class="history-list">
 		<transition-group name="list">
 			<history-item
@@ -34,9 +36,16 @@
 		gap: 15px;
 	}
 
+	.loading-wrap {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
 	.loading {
 		font-size: 100px;
 	}
+
 	.list-move,
 	.list-enter-active,
 	.list-leave-active {
@@ -47,9 +56,5 @@
 	.list-leave-to {
 		opacity: 0;
 		transform: translateX(30px);
-	}
-
-	.list-leave-active {
-		position: absolute;
 	}
 </style>
