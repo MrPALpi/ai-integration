@@ -1,0 +1,30 @@
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+@mixin flex-list($gap: 0) {
+  @include flex-row;
+  gap: $gap;
+}
+
+@mixin flex-list-column($gap: 0) {
+  @include flex-column;
+  gap: $gap;
+}
+
+@mixin flex-list-wrap($row-gap: 0, $column-gap: 0) {
+  @include flex-list($row-gap $column-gap);
+  flex-wrap: wrap;
+}
