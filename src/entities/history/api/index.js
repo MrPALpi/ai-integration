@@ -14,7 +14,7 @@ const useStories = () => {
   const offset = shallowRef(0);
   const total = shallowRef(0);
   const loading = shallowRef(false);
-  const stories = ref([]);
+  const stories = shallowRef([]);
   const selectedStories = ref([]);
   const rowsPerPage = shallowRef([10, 20, 50, 100]);
   const userStore = useUserStore();
