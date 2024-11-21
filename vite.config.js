@@ -28,7 +28,8 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        api: 'modern'
+        api: 'modern',
+        additionalData: '@use "@/shared/styles/mixins.scss" as *;'
       }
     }
   }

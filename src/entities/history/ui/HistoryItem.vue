@@ -5,9 +5,9 @@
 	import Button from 'primevue/button';
 	import Card from 'primevue/card';
 
-	const checked = shallowRef(false);
+	const checkbox = shallowRef(false);
 
-	const emits = defineEmits(['deleteStory', 'deleteStories']);
+	const emits = defineEmits(['delete-story', 'select-story']);
 	const props = defineProps({
 		story: { type: Object, default: {} },
 	});
@@ -17,16 +17,22 @@
 		<template #header>
 			<div class="history-item__header">
 				<Checkbox
-					:v-model="checked"
+					v-model="checkbox"
 					size="large"
-					:inputId="story.id"
-					@change="emits('deleteStories', story.id)"
+					@change="
+						checkbox.length
+							? emits('select-story', story.id)
+							: emits('deselect-story', story.id)
+					"
+					:value="story.id"
+					name="story"
 				/>
 				<Button
-					@click="emits('deleteStory', story.id)"
+					@click="emits('delete-story', story.id)"
 					icon="pi pi-times"
 					severity="danger"
 					aria-label="Delete"
+					size="small"
 				/>
 			</div>
 		</template>
@@ -50,10 +56,12 @@
 <style lang="scss" scoped>
 	.history-item {
 		word-break: break-all;
+		overflow: hidden;
 	}
 
 	.history-item__header {
 		display: flex;
 		justify-content: space-between;
+		padding: 10px 10px 0;
 	}
 </style>

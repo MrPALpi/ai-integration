@@ -1,14 +1,29 @@
 <script setup>
 	import { HistoryItem } from '@/entities/history';
-	const emits = defineEmits(['delete-story']);
+	import Button from 'primevue/button';
+	const emits = defineEmits([
+		'delete-story',
+		'select-story',
+		'deselect-story',
+		'clear-filters',
+	]);
 	const props = defineProps({
 		stories: { type: Array, default: [] },
 		loading: { type: Boolean, default: false },
+		needClearFilters: { type: Boolean, default: false },
 	});
 </script>
 
 <template>
-	<div v-if="loading" class="loading-wrap">
+	<div v-if="needClearFilters" class="history-list history-list_clear-filters">
+		<div>По данным фильтрам нет историй</div>
+		<Button
+			label="Очистить фильтры"
+			@click="$emit('clear-filters')"
+			severity="secondary"
+		/>
+	</div>
+	<div v-else-if="loading" class="loading-wrap">
 		<i
 			class="pi pi-spin pi-spinner loading"
 			style="font-size: 100px; color: white"
@@ -22,6 +37,8 @@
 				:key="item"
 				:story="item"
 				@delete-story="emits('delete-story', item.id)"
+				@select-story="emits('select-story', item.id)"
+				@deselect-story="emits('deselect-story', item.id)"
 			/>
 		</transition-group>
 	</div>
@@ -31,15 +48,15 @@
 
 <style lang="scss" scoped>
 	.history-list {
-		display: flex;
-		flex-direction: column;
-		gap: 15px;
+		@include flex-list-column(15px);
+	}
+
+	.history-list_clear-filters {
+		align-items: center;
 	}
 
 	.loading-wrap {
-		display: flex;
-		justify-content: center;
-		align-items: center;
+		@include flex-center;
 	}
 
 	.loading {
@@ -49,12 +66,20 @@
 	.list-move,
 	.list-enter-active,
 	.list-leave-active {
-		transition: all 0.5s ease;
+		transition: all 0.4s;
 	}
 
 	.list-enter-from,
 	.list-leave-to {
 		opacity: 0;
-		transform: translateX(30px);
+		transform: translateX(20%);
+	}
+
+	.list-leave-active {
+		max-width: 1430px;
+		padding: 0 15px;
+		margin: 0 auto;
+		width: 100%;
+		position: absolute;
 	}
 </style>

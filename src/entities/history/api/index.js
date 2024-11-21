@@ -1,7 +1,7 @@
 import { axiosInstance } from "@/shared/api";
-import { shallowRef, ref, watch } from 'vue';
+import { shallowRef, ref, computed, watch, onUnmounted } from 'vue';
 import { useUserStore } from '@/entities/user';
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter, useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { getParamDate } from "@/shared/lib/getParamDate";
 import { toDateTime } from "@/shared/lib/toDateTime";
 
@@ -14,28 +14,24 @@ const useStories = () => {
   const offset = shallowRef(0);
   const total = shallowRef(0);
   const loading = shallowRef(false);
-  const stories = shallowRef([]);
+  const stories = ref([]);
+  const selectedStories = ref([]);
   const rowsPerPage = shallowRef([10, 20, 50, 100]);
   const userStore = useUserStore();
-  const isUserChange = shallowRef(false);
   const route = useRoute();
 
-  const paramStartDate = (callback) => dates.value[0] && { 'startDate': callback(dates.value[0]) };
-  const paramEndDate = (callback) => dates.value[1] && { 'endDate': callback(dates.value[1]) };
+  const paramStartDate = (callback) => dates.value && dates.value[0] && { 'start_date': callback(dates.value[0]) };
+  const paramEndDate = (callback) => dates.value && dates.value[1] && { 'end_date': callback(dates.value[1]) };
+  const needClearFilters = computed(() => (dates?.value?.length > 0 || offset.value > 0) && !stories.value.length);
 
-  const fetchStories = async ({
-    limit = DEFAULT_PAGE_SIZE,
-    offset = 0,
-    startDate = null,
-    endDate = null
-  } = {}) => {
+  const fetchStories = async () => {
     loading.value = true;
 
     try {
       const res = await axiosInstance.get('/api/stories/', {
         params: {
-          limit: Math.min(limit, 100),
-          offset: Math.max(offset, 0),
+          limit: Math.min(limit.value, 100),
+          offset: Math.max(offset.value, 0),
           ...(paramStartDate(toDateTime)),
           ...(paramEndDate(toDateTime))
         },
@@ -45,9 +41,8 @@ const useStories = () => {
       });
 
       if (res.status === 200) {
-        stories.value = res.data;
-        // total.value = res.data.total;
-        total.value = stories.value && stories.value[0] && stories.value[0].total;
+        stories.value = res.data.stories;
+        total.value = res.data.total;
       }
     } catch (err) {
       console.error(err);
@@ -56,78 +51,6 @@ const useStories = () => {
       loading.value = false;
     }
   }
-
-  watch([dates, limit, offset], async () => {
-    isUserChange.value = true;
-    const page = offset.value / limit.value + 1;
-
-    router.push({ query: { page, rows: limit.value, ...(paramStartDate(getParamDate)), ...(paramEndDate(getParamDate)) } });
-    fetchStories({
-      offset: offset.value,
-      limit: limit.value,
-      startDate: dates.value[0],
-      endDate: dates.value[1]
-    }).then(() => {
-      isUserChange.value = false
-    });
-  });
-
-  watch(
-    () => route.query,
-    async () => {
-      if (isUserChange.value) return
-      init(route.query);
-    }
-  );
-
-  const init = ({ page, rows, startDate, endDate }) => {
-    let breakInitFetch = false;
-
-    if (rows) {
-      const limitVal = Number(rows);
-      breakInitFetch = limit.value !== limitVal;
-      limit.value = limitVal;
-    }
-
-    if (page) {
-      const offsetVal = (Number(page) - 1) * limit.value;
-      breakInitFetch = breakInitFetch || offset.value !== offsetVal;
-      offset.value = offsetVal;
-
-    }
-
-    if (rows && !rowsPerPage.value.includes(limit.value)) {
-      rowsPerPage.value = [limit.value, ...rowsPerPage.value].sort(
-        (a, b) => a - b
-      );
-    }
-
-
-    if (startDate) {
-      const startDateVal = new Date(startDate);
-      breakInitFetch = breakInitFetch || dates.value[0] !== startDateVal;
-      dates.value = [new Date(startDateVal)];
-    }
-    else {
-      dates.value = [];
-    }
-
-    if (endDate) {
-      const endDateVal = new Date(startDate);
-      breakInitFetch = breakInitFetch || dates.value[1] !== endDateVal;
-      dates.value = [dates.value[0], new Date(endDate)]
-    } else {
-      dates.value = dates.value[0] ? [dates.value[0]] : [];
-    }
-
-    if (!breakInitFetch) {
-      fetchStories({
-        offset: offset.value, limit: limit.value, startDate: dates.value[0], endDate: dates.value[1]
-      });
-    }
-  };
-
-  init(route.query);
 
   const deleteStory = async (id) => {
     try {
@@ -146,10 +69,71 @@ const useStories = () => {
     }
   }
 
+  const setVarsFromQuery = ({ page, rows, start_date: startDate, end_date: endDate }) => {
+    limit.value = rows ? Number(rows) : limit.value;
+    offset.value = page ? (Number(page) - 1) * limit.value : 0;
+
+    if (rows) {
+      rowsPerPage.value = [...new Set([...rowsPerPage.value, limit.value])].sort(
+        (a, b) => a - b
+      );
+    }
+
+    if (startDate) {
+      dates.value = [new Date(startDate)];
+    } else {
+      dates.value = [];
+    }
+
+    if (endDate) {
+      dates.value = [dates.value[0], new Date(endDate)];
+    } else {
+      dates.value = dates.value[0] ? [dates.value[0]] : [];
+    }
+  }
+
+
+  const selectStory = (id) => {
+    selectedStories.value.push(id);
+  };
+
+  const deselectStory = (id) => {
+    selectedStories.value = selectedStories.value.filter(
+      (story) => story !== id
+    );
+  };
+
+
+  const init = (query) => {
+    setVarsFromQuery(query);
+
+    fetchStories();
+  };
+
+  init(route.query);
+
+  watch([dates, limit, offset], async () => {
+    const page = offset.value / limit.value + 1;
+
+    router.push({ query: { page, rows: limit.value, ...(paramStartDate(getParamDate)), ...(paramEndDate(getParamDate)) } });
+    await fetchStories()
+  });
+
+
+  window.addEventListener('popstate', () => {
+    setVarsFromQuery(route.query);
+  });
+
+  onUnmounted(() => {
+    window.removeEventListener('popstate', () => {
+      setVarsFromQuery(route.query);
+    });
+  });
 
 
   return {
     stories,
+    selectedStories,
     total,
     dates,
     limit,
@@ -157,7 +141,10 @@ const useStories = () => {
     loading,
     rowsPerPage,
     fetchStories,
-    deleteStory
+    deleteStory,
+    selectStory,
+    deselectStory,
+    needClearFilters
   };
 }
 
