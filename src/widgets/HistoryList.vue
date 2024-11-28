@@ -1,6 +1,7 @@
 <script setup>
 	import { HistoryItem } from '@/entities/history';
 	import Button from 'primevue/button';
+	import Skeleton from 'primevue/skeleton';
 	const emits = defineEmits([
 		'delete-story',
 		'select-story',
@@ -23,12 +24,9 @@
 			severity="secondary"
 		/>
 	</div>
-	<div v-else-if="loading" class="loading-wrap">
-		<i
-			class="pi pi-spin pi-spinner loading"
-			style="font-size: 100px; color: white"
-		></i>
-	</div>
+	<template v-else-if="loading">
+		<Skeleton v-for="i in 4" :key="`skeleton_${i}`" height="164px" />
+	</template>
 
 	<div v-else-if="stories.length" class="history-list">
 		<transition-group name="list">
@@ -53,14 +51,6 @@
 
 	.history-list_clear-filters {
 		align-items: center;
-	}
-
-	.loading-wrap {
-		@include flex-center;
-	}
-
-	.loading {
-		font-size: 100px;
 	}
 
 	.list-move,
