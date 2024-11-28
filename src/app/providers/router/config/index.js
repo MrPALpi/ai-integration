@@ -9,7 +9,8 @@ export default [
     component: () => import('@/pages/chat/Index.vue'),
     meta: {
       layout: layouts.DEFAULT,
-      middleware: middlewareTypes.LOGIN
+      middleware: middlewareTypes.LOGIN,
+      transition: 'slide-left'
     },
   },
   {
@@ -18,7 +19,8 @@ export default [
     component: () => import('@/pages/history/Index.vue'),
     meta: {
       layout: layouts.DEFAULT,
-      middleware: middlewareTypes.LOGIN
+      middleware: middlewareTypes.LOGIN,
+      transition: 'slide-right'
     },
   },
   {
@@ -27,7 +29,8 @@ export default [
     component: () => import('@/pages/login/Index.vue'),
     meta: {
       layout: layouts.LOGIN,
-      middleware: middlewareTypes.ENTERED
+      middleware: middlewareTypes.ENTERED,
+      transition: 'slide-left'
     },
   },
   {
@@ -36,7 +39,8 @@ export default [
     component: () => import('@/pages/sign-up/Index.vue'),
     meta: {
       layout: layouts.LOGIN,
-      middleware: middlewareTypes.ENTERED
+      middleware: middlewareTypes.ENTERED,
+      transition: 'slide-right'
     },
   },
   {
@@ -44,7 +48,7 @@ export default [
     name: "NotFound",
     component: () => import('@/pages/error/Error.vue'),
     meta: {
-      layout: layouts.ERROR,
+      layout: layouts.ERROR
     }
   }
 ];
