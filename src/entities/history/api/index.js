@@ -4,12 +4,13 @@ import { useUserStore } from '@/entities/user';
 import { useRouter, useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { getParamDate } from "@/shared/lib/getParamDate";
 import { toDateTime } from "@/shared/lib/toDateTime";
+import useDates from '@/shared/lib/useDates';
 
 const useStories = () => {
   const DEFAULT_PAGE_SIZE = 10;
 
   const router = useRouter();
-  const dates = ref([]);
+  const { dates, paramStartDate, paramEndDate } = useDates();
   const limit = shallowRef(DEFAULT_PAGE_SIZE);
   const offset = shallowRef(0);
   const total = shallowRef(0);
@@ -20,8 +21,6 @@ const useStories = () => {
   const userStore = useUserStore();
   const route = useRoute();
 
-  const paramStartDate = (callback) => dates.value && dates.value[0] && { 'start_date': callback(dates.value[0]) };
-  const paramEndDate = (callback) => dates.value && dates.value[1] && { 'end_date': callback(dates.value[1]) };
   const needClearFilters = computed(() => (dates?.value?.length > 0 || offset.value > 0) && !stories.value.length);
 
   const fetchStories = async () => {
@@ -112,7 +111,13 @@ const useStories = () => {
 
   init(route.query);
 
-  watch([dates, limit, offset], async () => {
+  watch(() => [dates.value, limit.value, offset.value], async ([newDates, newLimit, newOffset], [oldDates, oldLimit, oldOffset]) => {
+    const needRefreshOffset = newOffset === oldOffset && newOffset !== 0 && newDates !== oldDates;
+
+    if (needRefreshOffset) {
+      offset.value = 0;
+      return;
+    }
     const page = offset.value / limit.value + 1;
 
     router.push({ query: { page, rows: limit.value, ...(paramStartDate(getParamDate)), ...(paramEndDate(getParamDate)) } });
