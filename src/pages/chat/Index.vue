@@ -1,11 +1,8 @@
+<script setup>
+	import { Chat } from '@/entities/chat';
+</script>
 <template>
-	<div>
-		это чат
-
-		<router-link to="/login"> to login </router-link>
-	</div>
+	<Chat />
 </template>
-
-<script setup></script>
 
 <style lang="scss" scoped></style>
