@@ -1,10 +1,13 @@
 import { ref, shallowRef } from 'vue';
 import { axiosInstance } from "@/shared/api";
-import useDates from '@/shared/lib/useDates';
+import { useDates } from '@/shared/lib/useDates';
 import { toDateTime } from '@/shared/lib/toDateTime';
 
 const useChat = () => {
-  const messages = shallowRef([]);
+  const messages = shallowRef([
+    { type: 'question', text: 'Hello' },
+    { type: 'answer', text: 'Hi' }
+  ]);
   const question = shallowRef(null);
   const { dates, paramStartDate, paramEndDate } = useDates();
   const loading = shallowRef(false);
@@ -18,7 +21,7 @@ const useChat = () => {
         ...paramEndDate(toDateTime),
         question: question.value
       });
-      messages.value.push({ type: 'answer', message: res.data.answer });
+      messages.value.push({ type: 'answer', text: res.data.answer });
     } catch (error) {
       console.error(error);
     } finally {

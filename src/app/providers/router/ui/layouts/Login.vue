@@ -16,5 +16,6 @@
 
 	.login-page__wrapper {
 		flex: 0 1 450px;
+		position: relative;
 	}
 </style>

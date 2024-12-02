@@ -1,13 +1,7 @@
 <script setup>
-	import { shallowRef } from 'vue';
 	import { humanDate } from '@/shared/lib/humanDate';
-	import Checkbox from 'primevue/checkbox';
-	import Button from 'primevue/button';
 	import Card from 'primevue/card';
 
-	const checkbox = shallowRef(false);
-
-	const emits = defineEmits(['delete-story', 'select-story']);
 	const props = defineProps({
 		story: { type: Object, default: {} },
 	});
@@ -16,24 +10,7 @@
 	<card class="history-item">
 		<template #header>
 			<div class="history-item__header">
-				<Checkbox
-					v-model="checkbox"
-					size="large"
-					@change="
-						checkbox.length
-							? emits('select-story', story.id)
-							: emits('deselect-story', story.id)
-					"
-					:value="story.id"
-					name="story"
-				/>
-				<Button
-					@click="emits('delete-story', story.id)"
-					icon="pi pi-times"
-					severity="danger"
-					aria-label="Delete"
-					size="small"
-				/>
+				<slot name="header" />
 			</div>
 		</template>
 		<template #title>

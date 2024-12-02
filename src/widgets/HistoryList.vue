@@ -1,18 +1,19 @@
 <script setup>
+	import { computed } from 'vue';
+	import { useHistoryStore } from '@/entities/history';
 	import { HistoryItem } from '@/entities/history';
 	import Button from 'primevue/button';
 	import Skeleton from 'primevue/skeleton';
-	const emits = defineEmits([
-		'delete-story',
-		'select-story',
-		'deselect-story',
-		'clear-filters',
-	]);
-	const props = defineProps({
-		stories: { type: Array, default: [] },
-		loading: { type: Boolean, default: false },
-		needClearFilters: { type: Boolean, default: false },
-	});
+	import DeleteStory from '@/features/deleteStrory/ui/DeleteStory.vue';
+	import SelectStory from '@/features/selectStory/ui/SelectStory.vue';
+
+	const history = useHistoryStore();
+
+	const needClearFilters = computed(
+		() =>
+			(history.dates?.value?.length > 0 || history.offset.value > 0) &&
+			!history.stories.value.length
+	);
 </script>
 
 <template>
@@ -20,24 +21,23 @@
 		<div>По данным фильтрам нет историй</div>
 		<Button
 			label="Очистить фильтры"
-			@click="$emit('clear-filters')"
+			@click="clearFilters"
 			severity="secondary"
 		/>
 	</div>
-	<template v-else-if="loading">
+
+	<template v-else-if="history.loading">
 		<Skeleton v-for="i in 4" :key="`skeleton_${i}`" height="164px" />
 	</template>
 
-	<div v-else-if="stories.length" class="history-list">
+	<div v-else-if="history.stories.length" class="history-list">
 		<transition-group name="list">
-			<history-item
-				v-for="item in stories"
-				:key="item"
-				:story="item"
-				@delete-story="emits('delete-story', item.id)"
-				@select-story="emits('select-story', item.id)"
-				@deselect-story="emits('deselect-story', item.id)"
-			/>
+			<history-item v-for="item in history.stories" :key="item" :story="item">
+				<template #header>
+					<select-story :id="item.id" />
+					<delete-story :id="item.id" />
+				</template>
+			</history-item>
 		</transition-group>
 	</div>
 
