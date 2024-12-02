@@ -11,9 +11,7 @@
 		<Suspense>
 			<router-view v-slot="{ Component, route }">
 				<transition :name="route.meta.transition || 'fade'">
-					<keep-alive>
-						<component :is="Component" :key="route.path" />
-					</keep-alive>
+					<component :is="Component" :key="route.path" />
 				</transition>
 			</router-view>
 		</Suspense>
@@ -29,6 +27,7 @@
 	.fade-enter-from,
 	.fade-leave-to {
 		opacity: 0;
+		position: absolute;
 	}
 
 	.slide-right-enter-active,

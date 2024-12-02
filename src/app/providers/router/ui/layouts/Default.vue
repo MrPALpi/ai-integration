@@ -6,7 +6,7 @@
 	<header class="header container">
 		<nav-bar />
 	</header>
-	<main class="container content">
+	<main class="main container content">
 		<slot />
 	</main>
 </template>
@@ -14,5 +14,9 @@
 	.header {
 		padding-top: 40px;
 		padding-bottom: 40px;
+	}
+
+	.main {
+		position: relative;
 	}
 </style>

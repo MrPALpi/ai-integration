@@ -1,3 +1,3 @@
 import HistoryItem from "./ui/HistoryItem.vue";
-import { useStories } from "./api";
-export { HistoryItem, useStories };
+import { useHistoryStore } from "./model";
+export { HistoryItem, useHistoryStore };

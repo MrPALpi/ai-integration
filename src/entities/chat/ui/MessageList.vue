@@ -10,7 +10,7 @@
 
 <template>
 	<transition-group name="message-list">
-		<Message v-for="message in messages" :text="message" />
+		<Message v-for="message in messages" :text="message.text" />
 	</transition-group>
 </template>
 

@@ -3,6 +3,7 @@
 	import Card from 'primevue/card';
 	import FloatLabel from 'primevue/floatlabel';
 	import InputText from 'primevue/inputtext';
+	import Password from 'primevue/password';
 	import Divider from 'primevue/divider';
 
 	const email = shallowRef('');
@@ -16,6 +17,7 @@
 
 	const props = defineProps({
 		loading: { type: Boolean, default: false },
+		showLevelPassword: { type: Boolean, default: false },
 	});
 </script>
 
@@ -40,24 +42,26 @@
 						id="email"
 						class="login-form__input"
 						autocomplete="true"
-						required="true"
+						:required="true"
 						type="email"
 						minlength="3"
 						:fluid="true"
+						:autofocus="true"
 					/>
 					<label for="email">Email</label>
 				</float-label>
 
 				<float-label variant="in">
-					<input-text
+					<Password
 						v-model="password"
+						:feedback="showLevelPassword"
+						:fluid="true"
+						toggleMask 
 						id="password"
-						type="password"
 						class="login-form__input"
 						autocomplete="true"
-						required="true"
+						:required="true"
 						minlength="3"
-						:fluid="true"
 					/>
 					<label for="password">Password</label>
 				</float-label>
@@ -79,7 +83,8 @@
 
 <style lang="scss" scoped>
 	.login-form {
-		margin-bottom: 100px;
+		margin-bottom: 100px;  
+		width: 100%;
 	}
 
 	.login-form__form {
@@ -91,7 +96,6 @@
 	}
 
 	.login-form__input {
-		width: 100%;
 
 		&:user-invalid {
 			border-color: red;
