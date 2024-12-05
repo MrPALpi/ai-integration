@@ -1,41 +1,26 @@
-import { ref, shallowRef } from 'vue';
 import { axiosInstance } from "@/shared/api";
-import { useDates } from '@/shared/lib/useDates';
-import { toDateTime } from '@/shared/lib/toDateTime';
 
-const useChat = () => {
-  const messages = shallowRef([
-    { type: 'question', text: 'Hello' },
-    { type: 'answer', text: 'Hi' }
-  ]);
-  const question = shallowRef(null);
-  const { dates, paramStartDate, paramEndDate } = useDates();
-  const loading = shallowRef(false);
+const invokeAssistant = async (params = { question: '', start_date: null, end_date: null }) => {
+  try {
+    const res = await axiosInstance.post('/api/assistant/invoke', params);
+    let answer = {};
 
-  const invokeAssistant = async () => {
-    loading.value = true;
-
-    try {
-      const res = await axiosInstance.post('/api/assistant/invoke', {
-        ...paramStartDate(toDateTime),
-        ...paramEndDate(toDateTime),
-        question: question.value
-      });
-      messages.value.push({ type: 'answer', text: res.data.answer });
-    } catch (error) {
-      console.error(error);
-    } finally {
-      loading.value = false;
+    if (res.status === 200) {
+      answer = res?.data || {};
+      
+    } else if (res.status === 204 || res.status === 500) {
+      answer = {
+        text: 'Нет ответа'
+      }
     }
-  }
 
-  return {
-    messages,
-    dates,
-    question,
-    loading,
-    invokeAssistant
-  }
+    return answer;
+
+  } catch (error) {
+    console.error(error);
+  } 
 }
 
-export { useChat };
+export const chatAPI = {
+  invokeAssistant
+}

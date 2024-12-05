@@ -1,35 +1,49 @@
 <script setup>
-	import { useChat } from '../api';
+	import { nextTick, ref } from 'vue';
+	import { useChat } from '../model';
 	import Textarea from 'primevue/textarea';
 	import Button from 'primevue/button';
 	import DatePicker from 'primevue/datepicker';
 	import MessageList from './MessageList.vue';
 	const { messages, dates, question, loading, invokeAssistant } = useChat();
 
+	const chatContent = ref(null);
+
 	const submit = () => {
-		console.log('submit	', loading.value);
 		if (loading.value) return;
-		messages.value.push({ type: 'question', message: question.value });
 		invokeAssistant();
-		question.value = '';
+		nextTick(() => {
+			chatContent.value.scrollTop = chatContent.value.scrollHeight;
+		})
 	};
+
+	const	scrollToBottom = () => {
+  const container = this.$refs.conversations;
+
+  container.scrollTop = container.scrollHeight;
+}
+
+
+	const enter = (event) => {
+		if (!event.shiftKey) submit();
+	}
+
 </script>
 <template>
 	<div class="chat chat-container">
-		<div class="chat__content">
+		<div ref="chatContent" class="chat__content">
 			<message-list :messages="messages" />
 		</div>
 		<div class="chat__wrapper-form chat-container">
 			<form class="chat__form" @submit.prevent="submit">
-				<Textarea v-model="question" class="chat__input" id="chat-input" autoResize  fluid rows="1" autofocus/>
+				<Textarea @keyup.enter.prevent="enter" v-model="question" class="chat__input" id="chat-input" autoResize  fluid rows="1" autofocus/>
 				<DatePicker
 					v-model="dates"
 					dateFormat="dd.mm.yy"
 					selectionMode="range"
 					:manualInput="false"
 					showButtonBar
-					showIcon 
-
+					showIcon
 				/>
 				<Button type="submit" icon="pi pi-send" variant="text" rounded  class="chat__submit"/>
 			</form>
@@ -50,6 +64,7 @@
 		overflow-y: auto;
 		margin-bottom: 20px;
 		@include thin-scrollbar;
+		scroll-behavior: smooth;
 	}
 
 	.chat__input {

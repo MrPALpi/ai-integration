@@ -30,7 +30,7 @@ export default [
     meta: {
       layout: layouts.LOGIN,
       middleware: middlewareTypes.ENTERED,
-      transition: 'fade'
+      transition: 'slide-left'
     },
   },
   {
@@ -40,7 +40,7 @@ export default [
     meta: {
       layout: layouts.LOGIN,
       middleware: middlewareTypes.ENTERED,
-      transition: 'fade'
+      transition: 'slide-right'
     },
   },
   {
