@@ -12,6 +12,8 @@
 
 	history.init(route.query);
 
+	history.enableWatch();
+
 	window.addEventListener('popstate', () => {
 		history.setVarsFromQuery(route.query);
 	});

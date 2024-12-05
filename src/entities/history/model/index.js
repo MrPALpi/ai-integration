@@ -80,36 +80,8 @@ export const useHistoryStore = defineStore('history', () => {
 
   const init = (query) => {
     setVarsFromQuery(query);
-
-    fetchStories().then(() => {
-      watch(
-        () => [dates.value, limit.value, offset.value],
-        async (
-          [newDates, newLimit, newOffset],
-          [oldDates, oldLimit, oldOffset]
-        ) => {
-          const needRefreshOffset =
-            newOffset === oldOffset && newOffset !== 0 && newDates !== oldDates;
-
-          if (needRefreshOffset) {
-            newOffset = 0;
-            return;
-          }
-          const page = newOffset / newLimit + 1;
-
-          router.push({
-            query: {
-              page,
-              rows: limit.value,
-              ...paramStartDate(getParamDate),
-              ...paramEndDate(getParamDate),
-            },
-          });
-
-          fetchStories();
-        }
-      );
-    });
+    console.log('test');
+    fetchStories();
   };
 
   const clearFilters = () => {
@@ -117,5 +89,38 @@ export const useHistoryStore = defineStore('history', () => {
     dates.value = [];
   };
 
-  return { fetchStories, deleteStory, init, selectStory, deselectStory, clearFilters, limit, offset, total, loading, stories, selectedStories, rowsPerPage, dates, paramStartDate, paramEndDate }
+  const enableWatch = () => {
+    watch(
+      () => [dates.value, limit.value, offset.value],
+      async (
+        [newDates, newLimit, newOffset],
+        [oldDates, oldLimit, oldOffset]
+      ) => {
+
+        const needRefreshOffset =
+          newOffset === oldOffset && newOffset !== 0 && newDates !== oldDates;
+        
+
+        if (needRefreshOffset) {
+          offset.value = 0;
+          return;
+        }
+  
+        const page = newOffset / newLimit + 1;
+  
+        router.push({
+          query: {
+            page,
+            rows: limit.value,
+            ...paramStartDate(getParamDate),
+            ...paramEndDate(getParamDate),
+          },
+        });
+        console.log('test 3');
+        fetchStories();
+      }
+    );
+  }
+    
+  return { fetchStories, deleteStory, init, selectStory, deselectStory, clearFilters, enableWatch, limit, offset, total, loading, stories, selectedStories, rowsPerPage, dates, paramStartDate, paramEndDate }
 })
