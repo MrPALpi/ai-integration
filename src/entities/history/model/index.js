@@ -106,7 +106,7 @@ export const useHistoryStore = defineStore('history', () => {
         }
   
         const page = newOffset / newLimit + 1;
-  
+
         router.push({
           query: {
             page,
@@ -121,5 +121,22 @@ export const useHistoryStore = defineStore('history', () => {
     );
   }
     
-  return { fetchStories, deleteStory, init, selectStory, deselectStory, clearFilters, enableWatch, limit, offset, total, loading, stories, selectedStories, rowsPerPage, dates, paramStartDate, paramEndDate }
+  return { 
+    fetchStories, 
+    deleteStory, 
+    init, 
+    selectStory, 
+    deselectStory, 
+    clearFilters, 
+    enableWatch,
+    setVarsFromQuery, 
+    limit, 
+    offset, 
+    total, 
+    loading, 
+    stories, 
+    selectedStories, 
+    rowsPerPage, 
+    dates 
+  }
 })
