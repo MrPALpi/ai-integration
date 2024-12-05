@@ -10,7 +10,7 @@
 	<app-layout>
 		<Suspense>
 			<router-view v-slot="{ Component, route }">
-				<transition :name="route.meta.transition || 'fade'">
+				<transition :name="route.meta.transition || 'fade'" mode="out-in">
 					<component :is="Component" :key="route.path" />
 				</transition>
 			</router-view>
@@ -27,12 +27,11 @@
 	.fade-enter-from,
 	.fade-leave-to {
 		opacity: 0;
-		position: absolute;
 	}
 
 	.slide-right-enter-active,
 	.slide-left-enter-active {
-		transition: all 0.2s ease-out 0.2s;
+		transition: all 0.2s ease-out;
 	}
 
 	.slide-right-leave-active,

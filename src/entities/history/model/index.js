@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { shallowRef, ref, watch } from 'vue';
 import { useDates } from '@/shared/lib/useDates';
 import { toDateTime } from '@/shared/lib/toDateTime';
-import { historyApi } from '../api';
+import { historyAPI } from '../api';
 import { useRouter } from 'vue-router';
 import { getParamDate } from '@/shared/lib/getParamDate';
 
@@ -22,7 +22,7 @@ export const useHistoryStore = defineStore('history', () => {
   const fetchStories = async () => {
     loading.value = true;
     try {
-      const res = await historyApi.fetchStories({
+      const res = await historyAPI.fetchStories({
         limit: limit.value,
         offset: offset.value,
         ...paramStartDate(toDateTime),
@@ -37,7 +37,7 @@ export const useHistoryStore = defineStore('history', () => {
   }
 
   const deleteStory = async (id) => {
-    const res = await historyApi.deleteStory(id);
+    const res = await historyAPI.deleteStory(id);
 
     if (res.id !== undefined) {
       stories.value = stories.value.filter((story) => story.id !== id);

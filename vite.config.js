@@ -29,7 +29,7 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         api: 'modern',
-        additionalData: '@use "@/shared/styles/mixins.scss" as *;'
+        additionalData: '@use "@/shared/styles/mixins.scss" as *; @use "@/shared/styles/vars.scss" as *;'
       }
     }
   }

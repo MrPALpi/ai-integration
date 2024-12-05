@@ -37,7 +37,7 @@ const deleteStory = async (id) => {
   }
 }
 
-export const historyApi = {
+export const historyAPI = {
   fetchStories,
   deleteStory
 }
