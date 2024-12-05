@@ -80,7 +80,6 @@ export const useHistoryStore = defineStore('history', () => {
 
   const init = (query) => {
     setVarsFromQuery(query);
-    console.log('test');
     fetchStories();
   };
 
@@ -116,7 +115,7 @@ export const useHistoryStore = defineStore('history', () => {
             ...paramEndDate(getParamDate),
           },
         });
-        console.log('test 3');
+
         fetchStories();
       }
     );
