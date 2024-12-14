@@ -15,7 +15,7 @@
 	:class="`message message_${message.type}`">
 		<img class="message__avatar" src="@/shared/assets/hound-app.webp" alt="message-avatar">
 		<div class="message__text">
-			<transition name="fade" mode="out-in">
+			<transition name="fade" >
 				<div v-if="message.loading">
 					<Skeleton class="message__skeleton" width="270px" height="8px" />
 					<Skeleton class="message__skeleton" width="270px" height="8px" />

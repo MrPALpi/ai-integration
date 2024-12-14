@@ -17,13 +17,6 @@
 		})
 	};
 
-	const	scrollToBottom = () => {
-  const container = this.$refs.conversations;
-
-  container.scrollTop = container.scrollHeight;
-}
-
-
 	const enter = (event) => {
 		if (!event.shiftKey) submit();
 	}
@@ -51,31 +44,36 @@
 	</div>
 </template>
 
-
 <style lang="scss" scoped>
+  .chat {
+    padding: 10px;
+  }
+
 	.chat-container {
 		width: 100%;
 		max-width: 800px;
 		margin: 0 auto;
-		padding: 0 10px;
+		padding-left: 10px;
+    padding-right: 10px;
 	}
+
 	.chat__content {
-		height: 70vh;
+		height: 65vh;
 		overflow-y: auto;
 		margin-bottom: 20px;
-		@include thin-scrollbar;
-		scroll-behavior: smooth;
-	}
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+  }
 
 	.chat__input {
 		resize: none;
     border: none;
     background-color: transparent;
     min-height: 36px;
-		max-height: 50vh;
-		@include thin-scrollbar;
-		overflow-y: auto !important;
-	}
+		max-height: 30vh;
+    overflow-y: auto !important;
+    scrollbar-width: none;
+  }
 
   .chat__wrapper-form {
 		border-radius: 12px;
