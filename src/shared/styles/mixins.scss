@@ -37,13 +37,13 @@
   
     }
   
-    &::-webkit-scrollbar-thumb {
-      width: 8px;
-      border-radius: 8px;
-      background-color: #cfcfcf;
-    }
+  &::-webkit-scrollbar-thumb {
+    width: 8px;
+    border-radius: 8px;
+    background-color: #cfcfcf;
+  }
   
-    @supports (not selector(::-webkit-scrollbar)) {
-      scrollbar-width: thin;
-    }
+  @supports (not selector(::-webkit-scrollbar)) {
+    scrollbar-width: thin;
+  }
 }

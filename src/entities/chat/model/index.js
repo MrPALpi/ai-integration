@@ -20,21 +20,23 @@ const useChat = () => {
   const invokeAssistant = async () => {
     
     loading.value = true;
+    const questionValue = question.value;
+    question.value = '';
     const answer = ref({type: 'answer', text: '', loading: loading.value});
     
-    messages.value.push({ type: 'question', text: question.value, loading: false });
+    messages.value.push({ type: 'question', text: questionValue, loading: false });
     messages.value.push(answer.value);
 
     try {
+
       const res = await chatAPI.invokeAssistant({
-        question: question.value,
+        question: questionValue,
         ...paramStartDate(toDateTime),
         ...paramEndDate(toDateTime)
       });
       
-      question.value = '';
-      answer.value.text = res.text;
-      answer.value.loading = false;
+        answer.value.text = res.answer;
+        answer.value.loading = false;
       
     } finally {
       loading.value = false;
