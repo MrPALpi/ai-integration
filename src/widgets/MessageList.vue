@@ -1,18 +1,18 @@
 <script setup>
-	import Message from './Message.vue';
-	const props = defineProps({
-		messages: {
-			type: Array,
-			default: () => [],
-		},
-	});
+	import { ChatMessage, useChatStore } from '@/entities/chat';
+
+	const chatStore = useChatStore();
 </script>
 
 <template>
 	<div class="message-list">
 		<transition-group name="message-list">
-		<Message v-for="message in messages" :key="message" :message="message" />
-	</transition-group>
+			<chat-message
+				v-for="message in chatStore.messages"
+				:key="message"
+				:message="message"
+			/>
+		</transition-group>
 	</div>
 </template>
 

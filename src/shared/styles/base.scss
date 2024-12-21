@@ -8,6 +8,11 @@
 	font-weight: normal;
 }
 
+::selection,
+::-moz-selection {
+	background: var(--p-gray-700);
+}
+
 html,
 body,
 #app {

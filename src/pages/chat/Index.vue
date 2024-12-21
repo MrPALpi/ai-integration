@@ -1,5 +1,5 @@
 <script setup>
-	import { Chat } from '@/entities/chat';
+	import Chat from '@/widgets/Chat.vue';
 </script>
 <template>
 	<Chat />

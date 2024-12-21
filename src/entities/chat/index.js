@@ -1,4 +1,6 @@
 import * as api from './api';
-import Chat from './ui/Chat.vue';
+import { useChatStore } from './model';
+import ChatContainer from './ui/ChatContainer.vue';
+import ChatMessage from './ui/ChatMessage.vue';
 
-export { api, Chat };
+export { api, ChatContainer, ChatMessage, useChatStore };

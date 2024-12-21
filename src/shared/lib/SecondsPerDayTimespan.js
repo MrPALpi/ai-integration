@@ -1,0 +1,1 @@
+export const SECONDS_PER_DAY_TIMESPAN = 86_400_000;

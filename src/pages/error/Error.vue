@@ -1,7 +1,3 @@
 <template>
-	<div>error 404</div>
+	<h1>error 404</h1>
 </template>
-
-<script setup></script>
-
-<style lang="scss" scoped></style>
